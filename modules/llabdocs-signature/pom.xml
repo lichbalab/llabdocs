@@ -37,8 +37,8 @@
 
         <dependency>
             <groupId>com.lichbalab.cmc</groupId>
-            <artifactId>cmc-certificate</artifactId>
-            <version>${project.version}</version>
+            <artifactId>cmc-spring-sdk</artifactId>
+            <version>2024.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

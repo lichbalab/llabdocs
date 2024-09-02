@@ -1,12 +1,5 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collection;
-
 import com.lichbalab.certificate.Certificate;
 import com.lichbalab.certificate.CertificateUtils;
-import com.lichbalab.cmc.mapper.CertificateDtoMapper;
 import com.lichbalab.docs.signature.DocSignService;
 import com.lichbalab.docs.signature.DocSignServiceImpl;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -19,6 +12,12 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,12 +26,12 @@ class DocSignServiceTest {
 
     @Test
     void signPdfTest() throws IOException {
-        File                   signCertFile = new File("src/test/resources/certs/test.pem");
-        Certificate            signCert     = CertificateUtils.buildFromPEM(new FileReader(signCertFile));
-        FileInputStream        doc          = new FileInputStream("src/test/resources/docs/test_doc_for_sign.pdf");
-        CertificateServiceTest certService  = new CertificateServiceTest(CertificateDtoMapper.certificateToDto(signCert, "alias"));
-        DocSignService         signService  = new DocSignServiceImpl(certService);
-        DSSDocument            signedDoc    = signService.signPdf(doc, "alias");
+        File signCertFile = new File("src/test/resources/certs/test.pem");
+        Certificate signCert = CertificateUtils.buildFromPEM(new FileReader(signCertFile));
+        FileInputStream doc = new FileInputStream("src/test/resources/docs/test_doc_for_sign.pdf");
+        CmcClientTest cmcClientTest = new CmcClientTest(signCert);
+        DocSignService signService = new DocSignServiceImpl(cmcClientTest);
+        DSSDocument signedDoc = signService.signPdf(doc, "alias");
 
         Assertions.assertNotNull(signedDoc, "Failed to sign pdf doc.");
 

@@ -1,6 +1,5 @@
 import com.lichbalab.certificate.Certificate;
 import com.lichbalab.certificate.CertificateUtils;
-import com.lichbalab.cmc.mapper.CertificateDtoMapper;
 import com.lichbalab.docs.signature.DocSignService;
 import com.lichbalab.docs.signature.DocSignServiceImpl;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
@@ -18,18 +17,17 @@ import java.io.InputStream;
 
 public class SignatureValidationServiceLLabTest {
 
-
     @Test
     void verifySignature() throws IOException {
         File signCertFile = new File("src/test/resources/certs/test.pem");
         Certificate signCert = CertificateUtils.buildFromPEM(new FileReader(signCertFile));
         FileInputStream doc = new FileInputStream("src/test/resources/docs/test_doc_for_sign.pdf");
-        CertificateServiceTest certService = new CertificateServiceTest(CertificateDtoMapper.certificateToDto(signCert, "alias"));
+        CmcClientTest certService = new CmcClientTest(signCert);
         DocSignService signService = new DocSignServiceImpl(certService);
         DSSDocument signedDoc = signService.signPdf(doc, "alias");
 
         SignatureValidationServiceLLab signatureValidationServiceLLab = new SignatureValidationServiceLLabImpl();
-        WSReportsDTO report = null;
+        WSReportsDTO report;
         try (InputStream is = signedDoc.openStream()) {
             report = signatureValidationServiceLLab.validateSignature(is.readAllBytes());
         }

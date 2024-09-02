@@ -1,11 +1,7 @@
 package com.lichbalab.docs.signature;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.lichbalab.certificate.Certificate;
-import com.lichbalab.cmc.mapper.CertificateDtoMapper;
-import com.lichbalab.cmc.service.CertificateService;
+import com.lichbalab.cmc.sdk.client.CmcClient;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -21,24 +17,26 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 
 @Service
 public class DocSignServiceImpl implements DocSignService {
 
-    private final CertificateService certificateService;
-
+    private final CmcClient cmcClient;
 
     @Autowired
-    public DocSignServiceImpl (CertificateService certificateService) {
-        this.certificateService = certificateService;
+    public DocSignServiceImpl (CmcClient cmcClient) {
+        this.cmcClient = cmcClient;
     }
 
     @Override
     public DSSDocument signPdf(InputStream doc, String certAlias) throws IOException {
 
-        Certificate certificate = CertificateDtoMapper.dtoToCertificate(certificateService.getCertByAlias(certAlias));
+        Certificate certificate = cmcClient.getCertificateByAlias(certAlias);
         try (SignatureTokenConnection signingToken = new SignatureTokenLLab(certificate)) {
-            DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
+            DSSPrivateKeyEntry privateKey = signingToken.getKeys().getFirst();
 
             // tag::demo[]
             // import eu.europa.esig.dss.pades.PAdESSignatureParameters;

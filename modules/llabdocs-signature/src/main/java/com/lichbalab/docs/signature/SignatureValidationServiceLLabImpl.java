@@ -5,7 +5,9 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SignatureValidationServiceLLabImpl implements SignatureValidationServiceLLab {
 
     private final RemoteDocumentValidationService validationService;

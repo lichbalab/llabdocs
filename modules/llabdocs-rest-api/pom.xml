@@ -13,7 +13,6 @@
     <artifactId>llabdocs-rest-api</artifactId>
     <name>Lichbalab Documents Rest Api</name>
 
-
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -26,6 +25,12 @@
             <groupId>com.lichbalab.docs</groupId>
             <artifactId>llabdocs-signature</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lichbalab.cmc</groupId>
+            <artifactId>cmc-spring-sdk</artifactId>
+            <version>2024.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -63,6 +68,23 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.lichbalab.cmc</groupId>
+            <artifactId>cmc-spring-sdk</artifactId>
+            <version>2024.1-SNAPSHOT</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lichbalab.cmc</groupId>
+            <artifactId>cmc-certificate-connect</artifactId>
+            <version>2024.1-SNAPSHOT</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- JUnit Jupiter API for writing tests -->
         <dependency>
