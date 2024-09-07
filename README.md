@@ -30,5 +30,5 @@ mvn clean package
 ### 3. Run the Application
 
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8081 --cmc.sdk.base-url=http://localhost:8080"
 ```
