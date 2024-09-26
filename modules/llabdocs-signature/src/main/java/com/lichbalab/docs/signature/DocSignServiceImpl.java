@@ -15,6 +15,7 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 
 
 @Service
+@ConditionalOnProperty(name = "cmc.sdk.enabled", havingValue = "true")
 public class DocSignServiceImpl implements DocSignService {
 
     private final CmcClient cmcClient;
