@@ -7,6 +7,7 @@ import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +24,7 @@ public class DocController {
     private final SignatureValidationServiceLLab signatureValidationServiceLLab;
 
     @Autowired
-    public DocController(DocSignService docSignService, SignatureValidationServiceLLab signatureValidationServiceLLab) {
+    public DocController(@Nullable DocSignService docSignService, SignatureValidationServiceLLab signatureValidationServiceLLab) {
         this.docSignService = docSignService;
         this.signatureValidationServiceLLab = signatureValidationServiceLLab;
     }
