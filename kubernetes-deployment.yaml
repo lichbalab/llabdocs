@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llabdocs-deployment
+  labels:
+    app: llabdocs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llabdocs
+  template:
+    metadata:
+      labels:
+        app: llabdocs
+    spec:
+      containers:
+      - name: llabdocs
+        image: lichbalab:llabdocs-2024.1
+        ports:
+        - containerPort: 8080
+        - containerPort: 5005
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llabdocs-service
+spec:
+  selector:
+    app: llabdocs
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: debug
+      port: 5005
+      targetPort: 5005
+  type: NodePort
