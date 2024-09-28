@@ -34,4 +34,22 @@ public class SignatureValidationServiceLLabTest {
 
         Assertions.assertNotNull(report, "Failed to verify signature.");
     }
+
+    @Test
+    void verifySignatureReportHtml() throws IOException {
+        File signCertFile = new File("src/test/resources/certs/test.pem");
+        Certificate signCert = CertificateUtils.buildFromPEM(new FileReader(signCertFile));
+        FileInputStream doc = new FileInputStream("src/test/resources/docs/test_doc_for_sign.pdf");
+        CmcClientTest certService = new CmcClientTest(signCert);
+        DocSignService signService = new DocSignServiceImpl(certService);
+        DSSDocument signedDoc = signService.signPdf(doc, "alias");
+
+        SignatureValidationServiceLLab signatureValidationServiceLLab = new SignatureValidationServiceLLabImpl();
+        String report;
+        try (InputStream is = signedDoc.openStream()) {
+            report = signatureValidationServiceLLab.validateSignatureSimpleHtmlReport(is.readAllBytes());
+        }
+
+        Assertions.assertNotNull(report, "Failed to verify signature.");
+    }
 }

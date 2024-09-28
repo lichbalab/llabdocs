@@ -48,4 +48,11 @@ public class DocController {
         WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes());
         return ResponseEntity.ok(reports);
     }
+
+    @PostMapping("/validate/signature/report-html")
+    public ResponseEntity<String> validateSignatureReportHtml(@RequestParam("document") MultipartFile document) throws IOException {
+        String report = signatureValidationServiceLLab.validateSignatureSimpleHtmlReport(document.getBytes());
+        return ResponseEntity.ok(report);
+    }
+
 }

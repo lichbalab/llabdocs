@@ -46,3 +46,20 @@ Run the Docker image with:
 docker-compose up -d
 ```
 This starts the Docker container in detached mode.
+
+### 6. Deploy the Application in K8s
+Run the Docker image with:
+```bash
+kubectl apply -f kubernetes-deployment.yaml 
+```
+
+### 7. Scale Application
+Run the Docker image with:
+```bash
+kubectl scale deployment llabdocs-deployment --replicas=5 
+```
+
+### 8. Get Service details 
+```bash
+kubectl get svc llabdocs-service
+```
