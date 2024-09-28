@@ -22,11 +22,11 @@ spec:
         - containerPort: 5005
         resources:
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "5000m"
+            memory: "4096Mi"
           requests:
             cpu: "200m"
-            memory: "256Mi"
+            memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service
