@@ -32,3 +32,17 @@ mvn clean package
 ```bash
 mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8081 --cmc.sdk.base-url=http://localhost:8080"
 ```
+
+### 4. Build Docker Image
+If you prefer Docker, you can build an image using:
+```bash
+docker build -t lichbalab:llabdocs-2024.1 .
+```
+This command builds a Docker image tagged `lichbalab:llabdocs-2024.1`.
+
+### 5. Run Docker Image
+Run the Docker image with:
+```bash
+docker-compose up -d
+```
+This starts the Docker container in detached mode.

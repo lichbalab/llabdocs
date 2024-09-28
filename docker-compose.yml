@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  # Application service for config-rest-api
+  llabdocs:
+    image: lichbalab:llabdocs-2024.1
+    ports:
+      - "8080:8080"
+      - "5005:5005" #Debug port
+    restart: always
