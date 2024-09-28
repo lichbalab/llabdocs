@@ -58,3 +58,8 @@ Run the Docker image with:
 ```bash
 kubectl scale deployment llabdocs-deployment --replicas=5 
 ```
+
+### 8. Get Service details 
+```bash
+kubectl get svc llabdocs-service
+```
