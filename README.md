@@ -63,3 +63,8 @@ kubectl scale deployment llabdocs-deployment --replicas=5
 ```bash
 kubectl get svc llabdocs-service
 ```
+
+### 9. Start K8S GUI
+```bash
+kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+```

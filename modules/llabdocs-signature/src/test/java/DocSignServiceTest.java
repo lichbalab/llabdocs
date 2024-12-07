@@ -6,8 +6,8 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdfa.PDFAValidationResult;
 import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class DocSignServiceTest {
         // Extract PDF/A validation result
         // This report contains only validation of a document against PDF/A specification
         // and no signature validation process result
-        PDFAValidationResult pdfaValidationResult = documentValidator.getPdfValidationResult();
+        PDFAValidationResult pdfaValidationResult = documentValidator.getPdfaValidationResult();
 
         // This variable contains the name of the identified PDF/A profile (or closest if validation failed)
         String profileId = pdfaValidationResult.getProfileId();
