@@ -1,21 +1,21 @@
 package com.lichbalab.docs.signature;
 
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SignatureValidationServiceLLabImpl implements SignatureValidationServiceLLab {
 
-    private final RemoteDocumentValidationService validationService;
+    public RemoteDocumentValidationService validationService;
 
-    public SignatureValidationServiceLLabImpl() {
-        this.validationService = new RemoteDocumentValidationService();
-        this.validationService.setVerifier(new CommonCertificateVerifier());
+    @Autowired
+    public SignatureValidationServiceLLabImpl(RemoteDocumentValidationService validationService) {
+        this.validationService = validationService;
     }
 
     @Override

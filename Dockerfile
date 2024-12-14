@@ -4,8 +4,9 @@ FROM eclipse-temurin:21-alpine
 # Set the working directory in the Docker image
 WORKDIR /llabdocs
 
-# Copy the entire project source
+# Copy the entire project source and certs
 COPY modules/llabdocs-rest-api/target/llabdocs-rest-api-*.jar /llabdocs/llabdocs-rest-api.jar
+COPY modules/llabdocs-rest-api/target/certs/ /llabdocs/certs/
 
 # Specify the entry point for the application
 # ENTRYPOINT ["java","-jar","/llabdocs/llabdocs-rest-api.jar"]
