@@ -3,6 +3,7 @@ package com.lichbalab.docs.controller;
 import com.lichbalab.docs.signature.DocSignService;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -44,9 +45,9 @@ public class DocController {
     }
 
     @PostMapping("/validate/signature")
-    public ResponseEntity<WSReportsDTO> validateSignature(@RequestParam("document") MultipartFile document) throws IOException {
+    public ResponseEntity<XmlSimpleReport> validateSignature(@RequestParam("document") MultipartFile document) throws IOException {
         WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes());
-        return ResponseEntity.ok(reports);
+        return ResponseEntity.ok(reports.getSimpleReport());
     }
 
     @PostMapping("/validate/signature/report-html")

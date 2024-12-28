@@ -314,7 +314,7 @@ public class LLabDocsConfig {
         if (Utils.isStringNotEmpty(trustSourceKsFilename)) {
             try {
                 KeyStoreCertificateSource keyStore = new KeyStoreCertificateSource(
-                        new ClassPathResource(trustSourceKsFilename).getFile(), trustSourceKsType, trustSourceKsPassword.toCharArray());
+                        new File(trustSourceKsFilename), trustSourceKsType, trustSourceKsPassword.toCharArray());
                 trustedCertificateSource.importAsTrusted(keyStore);
             } catch (IOException e) {
                 throw new DSSException("Unable to load the file " + trustSourceKsFilename, e);
