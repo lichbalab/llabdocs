@@ -1,5 +1,6 @@
 package com.lichbalab.docs.signature;
 
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
@@ -19,18 +20,19 @@ public class SignatureValidationServiceLLabImpl implements SignatureValidationSe
     }
 
     @Override
-    public WSReportsDTO validateSignature(byte[] signedDocument) {
+    public WSReportsDTO validateSignature(byte[] signedDocument, String documentName) {
         DataToValidateDTO dataToValidateDTO = new DataToValidateDTO();
         RemoteDocument remoteDocument = new RemoteDocument();
         remoteDocument.setBytes(signedDocument);
+        remoteDocument.setName(documentName);
         dataToValidateDTO.setSignedDocument(remoteDocument);
 
         return validationService.validateDocument(dataToValidateDTO);
     }
 
-    public String validateSignatureSimpleHtmlReport(byte[] signedDocument) {
+    public String validateSignatureSimpleHtmlReport(byte[] signedDocument, String documentName) {
         SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
-        WSReportsDTO reportsDTO = validateSignature(signedDocument);
+        WSReportsDTO reportsDTO = validateSignature(signedDocument, documentName);
         try {
             return simpleReportFacade.generateHtmlReport(reportsDTO.getSimpleReport());
         } catch (Exception ex) {

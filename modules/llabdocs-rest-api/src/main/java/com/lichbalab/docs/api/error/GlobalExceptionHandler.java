@@ -1,4 +1,4 @@
-package com.lichbalab.docs.error;
+package com.lichbalab.docs.api.error;
 
 import com.lichbalab.cmc.core.CmcException;
 import com.lichbalab.cmc.core.ErrorCode;
