@@ -7,6 +7,7 @@ WORKDIR /llabdocs
 # Copy the entire project source and certs
 COPY modules/llabdocs-rest-api/target/llabdocs-rest-api-*.jar /llabdocs/llabdocs-rest-api.jar
 COPY modules/llabdocs-rest-api/target/certs/ /llabdocs/certs/
+COPY modules/llabdocs-rest-api/target/policy/ /llabdocs/policy/
 
 # Specify the entry point for the application
 # ENTRYPOINT ["java","-jar","/llabdocs/llabdocs-rest-api.jar"]

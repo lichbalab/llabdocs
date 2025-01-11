@@ -28,6 +28,8 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,14 +37,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 @Import({SchedulingConfig.class })
-
 public class LLabDocsConfig {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LLabDocsConfig.class);
+
+    @Value("${ades.validation.policy:}")
+    private String adesPolicyFilename;
 
     @Value("${trusted.source.keystore.type:}")
     private String trustSourceKsType;
@@ -305,6 +314,20 @@ public class LLabDocsConfig {
             }
         }
 */
+        return service;
+    }
+
+    @Bean
+    public RemoteDocumentValidationService remoteAdesValidationService() {
+        RemoteDocumentValidationService service = new RemoteDocumentValidationService();
+        service.setVerifier(certificateVerifier());
+        File file = new File(adesPolicyFilename);
+
+        try (InputStream is = Files.newInputStream(file.toPath())) {
+            service.setDefaultValidationPolicy(is);
+        } catch (IOException e) {
+            LOG.error("Unable to parse policy: {}", e.getMessage(), e);
+        }
         return service;
     }
 

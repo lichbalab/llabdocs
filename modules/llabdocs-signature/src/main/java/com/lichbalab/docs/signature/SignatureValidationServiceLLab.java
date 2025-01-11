@@ -4,7 +4,8 @@ import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 public interface SignatureValidationServiceLLab {
 
-    WSReportsDTO validateSignature(byte[] signedDocument, String documentName);
+    WSReportsDTO validateSignature(byte[] signedDocument, String documentName, boolean getQualification);
 
     String validateSignatureSimpleHtmlReport(byte[] signedDocument, String documentName);
+
 }
