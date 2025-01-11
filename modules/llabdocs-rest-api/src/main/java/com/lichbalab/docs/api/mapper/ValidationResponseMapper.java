@@ -73,7 +73,7 @@ public class ValidationResponseMapper {
         if (signature.getSubIndication() != null) {
             result.setIndicationDetails(signatureIndicationMessageSource.getMessage(
                     signature.getSubIndication().name(),
-                    new Object[]{}, locale
+                    new Object[]{}, "", locale
             ));
         }
 
