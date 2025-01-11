@@ -1,8 +1,10 @@
 package com.lichbalab.docs.controller;
 
 import com.lichbalab.cmc.spring.sdk.test.BaseIntegrationTest;
+import com.lichbalab.docs.api.model.DocumentSignatureValidationResult;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +29,16 @@ public class DocsControllerIT extends BaseIntegrationTest {
 
     @Test
     void validateSignature() {
-        File fileToUpload = new File("src/test/resources/docs/test_doc_signed.pdf");
+        String documentName = "test_doc_signed.pdf";
+        File fileToUpload = new File("src/test/resources/docs/" + documentName);
 
         Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/signature");
+        DocumentSignatureValidationResult result = response.as(DocumentSignatureValidationResult.class);
+
 
         Assertions.assertEquals(200, response.statusCode());
         Assertions.assertEquals("application/json", response.getContentType());
+        Assertions.assertEquals(documentName, result.getDocumentName());
     }
 
     @Override

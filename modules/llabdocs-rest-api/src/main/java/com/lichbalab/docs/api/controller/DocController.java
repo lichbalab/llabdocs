@@ -1,4 +1,4 @@
-package com.lichbalab.docs.controller;
+package com.lichbalab.docs.api.controller;
 
 import com.lichbalab.docs.signature.DocSignService;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
@@ -19,18 +19,16 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/docs")
+@RequestMapping("/docs/sign")
 public class DocController {
     private final DocSignService docSignService;
-    private final SignatureValidationServiceLLab signatureValidationServiceLLab;
 
     @Autowired
-    public DocController(@Nullable DocSignService docSignService, SignatureValidationServiceLLab signatureValidationServiceLLab) {
+    public DocController(@Nullable DocSignService docSignService) {
         this.docSignService = docSignService;
-        this.signatureValidationServiceLLab = signatureValidationServiceLLab;
     }
 
-    @PostMapping("/sign/pdf")
+    @PostMapping("/pdf")
     public ResponseEntity<StreamingResponseBody> signPdf(@RequestParam("document") MultipartFile document, @RequestParam("alias") String certificateAlias) {
 
         StreamingResponseBody responseBody = outputStream -> {
@@ -43,17 +41,4 @@ public class DocController {
                  .contentType(MediaType.APPLICATION_PDF)
                  .body(responseBody);
     }
-
-    @PostMapping("/validate/signature")
-    public ResponseEntity<XmlSimpleReport> validateSignature(@RequestParam("document") MultipartFile document) throws IOException {
-        WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes());
-        return ResponseEntity.ok(reports.getSimpleReport());
-    }
-
-    @PostMapping("/validate/signature/report-html")
-    public ResponseEntity<String> validateSignatureReportHtml(@RequestParam("document") MultipartFile document) throws IOException {
-        String report = signatureValidationServiceLLab.validateSignatureSimpleHtmlReport(document.getBytes());
-        return ResponseEntity.ok(report);
-    }
-
 }

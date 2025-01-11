@@ -41,7 +41,7 @@ public class SignatureValidationServiceLLabTest {
 */
         WSReportsDTO report;
         try (InputStream is = signedDoc.openStream()) {
-            report = signatureValidationServiceLLab.validateSignature(is.readAllBytes());
+            report = signatureValidationServiceLLab.validateSignature(is.readAllBytes(), "test_doc_for_sign.pdf");
         }
 
         Assertions.assertNotNull(report, "Failed to verify signature.");
@@ -63,7 +63,7 @@ public class SignatureValidationServiceLLabTest {
 */
         String report;
         try (InputStream is = signedDoc.openStream()) {
-            report = signatureValidationServiceLLab.validateSignatureSimpleHtmlReport(is.readAllBytes());
+            report = signatureValidationServiceLLab.validateSignatureSimpleHtmlReport(is.readAllBytes(), "test_doc_for_sign.pdf");
         }
 
         Assertions.assertNotNull(report, "Failed to verify signature.");
