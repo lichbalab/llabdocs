@@ -3,10 +3,7 @@ import com.lichbalab.certificate.CertificateUtils;
 import com.lichbalab.docs.signature.DocSignService;
 import com.lichbalab.docs.signature.DocSignServiceImpl;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
-import com.lichbalab.docs.signature.SignatureValidationServiceLLabImpl;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,15 +30,10 @@ public class SignatureValidationServiceLLabTest {
         CmcClientTest certService = new CmcClientTest(signCert);
         DocSignService signService = new DocSignServiceImpl(certService);
         DSSDocument signedDoc = signService.signPdf(doc, "alias");
-/*
-        RemoteDocumentValidationService rds = new RemoteDocumentValidationService();
-        rds.setVerifier(new CommonCertificateVerifier());
 
-        SignatureValidationServiceLLab signatureValidationServiceLLab = new SignatureValidationServiceLLabImpl(rds);
-*/
         WSReportsDTO report;
         try (InputStream is = signedDoc.openStream()) {
-            report = signatureValidationServiceLLab.validateSignature(is.readAllBytes(), "test_doc_for_sign.pdf");
+            report = signatureValidationServiceLLab.validateSignature(is.readAllBytes(), "test_doc_for_sign.pdf", false);
         }
 
         Assertions.assertNotNull(report, "Failed to verify signature.");
@@ -56,11 +48,6 @@ public class SignatureValidationServiceLLabTest {
         DocSignService signService = new DocSignServiceImpl(certService);
         DSSDocument signedDoc = signService.signPdf(doc, "alias");
 
-/*
-        RemoteDocumentValidationService rds = new RemoteDocumentValidationService();
-        rds.setVerifier(new CommonCertificateVerifier());
-        SignatureValidationServiceLLab signatureValidationServiceLLab = new SignatureValidationServiceLLabImpl(rds);
-*/
         String report;
         try (InputStream is = signedDoc.openStream()) {
             report = signatureValidationServiceLLab.validateSignatureSimpleHtmlReport(is.readAllBytes(), "test_doc_for_sign.pdf");

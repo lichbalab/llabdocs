@@ -35,7 +35,14 @@ public class DocValidationController {
 
     @PostMapping("/signature")
     public ResponseEntity<DocumentSignatureValidationResult> validateSignature(@RequestParam("document") MultipartFile document, HttpServletRequest request) throws IOException {
-        WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename());
+        WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename(), true);
         return ResponseEntity.ok(mapper.toValidationResult(reports, request.getLocale()));
     }
+
+    @PostMapping("/ades/signature")
+    public ResponseEntity<DocumentSignatureValidationResult> validateAdesSignature(@RequestParam("document") MultipartFile document, HttpServletRequest request) throws IOException {
+        WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename(), false);
+        return ResponseEntity.ok(mapper.toValidationResult(reports, request.getLocale()));
+    }
+
 }
