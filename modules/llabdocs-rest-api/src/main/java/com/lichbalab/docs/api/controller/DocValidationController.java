@@ -6,6 +6,7 @@ import com.lichbalab.docs.api.model.DocumentSignatureValidationResult;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -70,8 +71,16 @@ public class DocValidationController {
                     )
             }
     )
-    @PostMapping("/ades-signatures")
-    public ResponseEntity<DocumentSignatureValidationResult> validateAdesSignature(@RequestParam("document") MultipartFile document, HttpServletRequest request) throws IOException {
+    @PostMapping(value = "/ades-signatures", consumes = "multipart/form-data")
+    public ResponseEntity<DocumentSignatureValidationResult> validateAdesSignature(
+            @RequestParam(value = "document")
+            @Parameter(
+                    description = "The document file containing  Advanced Electronic Signatures (AdES) to validate. ",
+                    required = true,
+                    content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))
+            )
+            MultipartFile document,
+            HttpServletRequest request) throws IOException {
         WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename(), false);
         return ResponseEntity.ok(mapper.toValidationResult(reports, request.getLocale()));
     }
@@ -111,10 +120,18 @@ public class DocValidationController {
                     )
             }
     )
-    @PostMapping("/ges-signatures")
-    public ResponseEntity<DocumentSignatureValidationResult> validateQesSignature(@RequestParam("document") MultipartFile document, HttpServletRequest request) throws IOException {
+    @PostMapping(value = "/ges-signatures", consumes = "multipart/form-data")
+    public ResponseEntity<DocumentSignatureValidationResult> validateQesSignature(
+            @RequestParam(value = "document")
+            @Parameter(
+                    description = "The document file containing Qualified Electronic Signatures (QES) to validate. " +
+                            "The document should contain signatures created with qualified certificates " +
+                            "from trusted Certificate Authorities (CAs).",
+                    required = true,
+                    content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))
+            ) MultipartFile document,
+            HttpServletRequest request) throws IOException {
         WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename(), true);
         return ResponseEntity.ok(mapper.toValidationResult(reports, request.getLocale()));
     }
-
 }
