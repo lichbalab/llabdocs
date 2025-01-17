@@ -5,6 +5,7 @@ import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/docs/sign")
+@Hidden
 public class DocController {
     private final DocSignService docSignService;
 

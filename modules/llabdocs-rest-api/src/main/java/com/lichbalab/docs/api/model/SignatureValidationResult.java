@@ -58,19 +58,30 @@ package com.lichbalab.docs.api.model;
 /// }
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 import java.util.List;
 
+@Schema(description = "Detailed result of a single signature validation")
 public class SignatureValidationResult {
+    @Schema(description = "Unique identifier of the signature")
     private String signatureId;
+    
+    @Schema(description = "Overall indication of the signature validation (e.g., TOTAL-PASSED, TOTAL-FAILED)")
     private String indication;
+    
+    @Schema(description = "Detailed explanation of the validation indication")
     private String indicationDetails;
+    
+    @Schema(description = "Name or identifier of the signer")
     private String signer;
     
+    @Schema(description = "Time when the signature was validated", format = "date-time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date validationTime;
     
+    @Schema(description = "Time when the document was signed", format = "date-time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date signingTime;
     
@@ -80,14 +91,22 @@ public class SignatureValidationResult {
     private QualificationInfo qualification;
 
     // Nested Certificate Info class
+    @Schema(description = "Information about a certificate")
     public static class CertificateInfo {
+        @Schema(description = "Subject distinguished name")
         private String subject;
+        
+        @Schema(description = "Issuer distinguished name")
         private String issuer;
+        
+        @Schema(description = "Certificate serial number")
         private String serialNumber;
         
+        @Schema(description = "Certificate validity start date", format = "date-time")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
         private Date validFrom;
         
+        @Schema(description = "Certificate validity end date", format = "date-time")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
         private Date validTo;
 
@@ -109,9 +128,15 @@ public class SignatureValidationResult {
     }
 
     // Nested Validation Details class
+    @Schema(description = "Details of the validation process")
     public static class ValidationDetails {
+        @Schema(description = "List of validation errors")
         private List<String> errors;
+        
+        @Schema(description = "List of validation warnings")
         private List<String> warns;
+        
+        @Schema(description = "List of informational messages")
         private List<String> infos;
 
         // Getters and Setters
@@ -126,9 +151,15 @@ public class SignatureValidationResult {
     }
 
     // Nested Qualification Info class
+    @Schema(description = "Information about signature qualification")
     public static class QualificationInfo {
+        @Schema(description = "Qualification level (e.g., QESig)")
         private String level;
+        
+        @Schema(description = "Human-readable description of the qualification")
         private String description;
+        
+        @Schema(description = "Detailed validation information for qualification")
         private ValidationDetails details;
 
         // Getters and Setters

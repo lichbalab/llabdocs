@@ -4,6 +4,7 @@ import com.lichbalab.docs.signature.DocSignService;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -17,6 +18,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/docs/validate/report")
+@Hidden
 public class DocValidationReportController {
     private final SignatureValidationServiceLLab signatureValidationServiceLLab;
 
