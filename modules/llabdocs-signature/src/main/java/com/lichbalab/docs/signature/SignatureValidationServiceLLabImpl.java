@@ -12,40 +12,44 @@ import org.springframework.stereotype.Service;
 @Service
 public class SignatureValidationServiceLLabImpl implements SignatureValidationServiceLLab {
 
-    public RemoteDocumentValidationService validationService;
+    public RemoteDocumentValidationService qesValidationService;
     public RemoteDocumentValidationService adesValidationService;
 
     @Autowired
     public SignatureValidationServiceLLabImpl(
-            @Qualifier("remoteQesValidationService") RemoteDocumentValidationService validationService,
+            @Qualifier("remoteQesValidationService") RemoteDocumentValidationService qesValidationService,
             @Qualifier("remoteAdesValidationService") RemoteDocumentValidationService adesValidationService
     ) {
-        this.validationService = validationService;
+        this.qesValidationService = qesValidationService;
         this.adesValidationService = adesValidationService;
     }
 
     @Override
-    public WSReportsDTO validateSignature(byte[] signedDocument, String documentName, boolean getQualification) {
-        DataToValidateDTO dataToValidateDTO = new DataToValidateDTO();
-        RemoteDocument remoteDocument = new RemoteDocument();
-        remoteDocument.setBytes(signedDocument);
-        remoteDocument.setName(documentName);
-        dataToValidateDTO.setSignedDocument(remoteDocument);
-
-        if (getQualification) {
-            return validationService.validateDocument(dataToValidateDTO);
-        }
-        return adesValidationService.validateDocument(dataToValidateDTO);
+    public WSReportsDTO validateQesSignature(byte[] signedDocument, String documentName) {
+        return qesValidationService.validateDocument(prepareDataToValidate(signedDocument, documentName));
     }
 
+    @Override
+    public WSReportsDTO validateAdesSignature(byte[] signedDocument, String documentName) {
+        return adesValidationService.validateDocument(prepareDataToValidate(signedDocument, documentName));
+    }
 
     public String validateSignatureSimpleHtmlReport(byte[] signedDocument, String documentName) {
         SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
-        WSReportsDTO reportsDTO = validateSignature(signedDocument, documentName, false);
+        WSReportsDTO reportsDTO = validateQesSignature(signedDocument, documentName);
         try {
             return simpleReportFacade.generateHtmlReport(reportsDTO.getSimpleReport());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    private DataToValidateDTO prepareDataToValidate(byte[] signedDocument, String documentName) {
+        DataToValidateDTO dataToValidateDTO = new DataToValidateDTO();
+        RemoteDocument remoteDocument = new RemoteDocument();
+        remoteDocument.setBytes(signedDocument);
+        remoteDocument.setName(documentName);
+        dataToValidateDTO.setSignedDocument(remoteDocument);
+        return dataToValidateDTO;
     }
 }
