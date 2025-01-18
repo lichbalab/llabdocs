@@ -63,8 +63,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 import java.util.List;
 
-@Schema(description = "Detailed result of a single signature validation")
-public class SignatureValidationResult {
+@Schema(description = "Detailed result of a AdES single signature validation")
+public class AdesSignatureValidationResult {
     @Schema(description = "Unique identifier of the signature")
     private String signatureId;
     
@@ -88,7 +88,6 @@ public class SignatureValidationResult {
     private CertificateInfo signingCertificate;
     private List<CertificateInfo> certificateChain;
     private ValidationDetails signatureDetails;
-    private QualificationInfo qualification;
 
     // Nested Certificate Info class
     @Schema(description = "Information about a certificate")
@@ -150,29 +149,6 @@ public class SignatureValidationResult {
         public void setInfos(List<String> infos) { this.infos = infos; }
     }
 
-    // Nested Qualification Info class
-    @Schema(description = "Information about signature qualification")
-    public static class QualificationInfo {
-        @Schema(description = "Qualification level (e.g., QESig)")
-        private String level;
-        
-        @Schema(description = "Human-readable description of the qualification")
-        private String description;
-        
-        @Schema(description = "Detailed validation information for qualification")
-        private ValidationDetails details;
-
-        // Getters and Setters
-        public String getLevel() { return level; }
-        public void setLevel(String level) { this.level = level; }
-        
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
-        
-        public ValidationDetails getDetails() { return details; }
-        public void setDetails(ValidationDetails details) { this.details = details; }
-    }
-
     // Getters and Setters for main class
     public String getSignatureId() { return signatureId; }
     public void setSignatureId(String signatureId) { this.signatureId = signatureId; }
@@ -200,7 +176,4 @@ public class SignatureValidationResult {
 
     public ValidationDetails getSignatureDetails() { return signatureDetails; }
     public void setSignatureDetails(ValidationDetails signatureDetails) { this.signatureDetails = signatureDetails; }
-
-    public QualificationInfo getQualification() { return qualification; }
-    public void setQualification(QualificationInfo qualification) { this.qualification = qualification; }
 }

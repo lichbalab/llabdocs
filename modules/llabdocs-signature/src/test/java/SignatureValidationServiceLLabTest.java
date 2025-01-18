@@ -33,7 +33,7 @@ public class SignatureValidationServiceLLabTest {
 
         WSReportsDTO report;
         try (InputStream is = signedDoc.openStream()) {
-            report = signatureValidationServiceLLab.validateSignature(is.readAllBytes(), "test_doc_for_sign.pdf", false);
+            report = signatureValidationServiceLLab.validateQesSignature(is.readAllBytes(), "test_doc_for_sign.pdf");
         }
 
         Assertions.assertNotNull(report, "Failed to verify signature.");

@@ -2,7 +2,8 @@ package com.lichbalab.docs.api.controller;
 
 import com.lichbalab.docs.api.error.ErrorResponse;
 import com.lichbalab.docs.api.mapper.ValidationResponseMapper;
-import com.lichbalab.docs.api.model.DocumentSignatureValidationResult;
+import com.lichbalab.docs.api.model.DocumentAdesSignatureValidationResult;
+import com.lichbalab.docs.api.model.DocumentQesSignatureValidationResult;
 import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,7 +58,7 @@ public class DocValidationController {
                             description = "Document validated successfully",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = DocumentSignatureValidationResult.class)
+                                    schema = @Schema(implementation = DocumentAdesSignatureValidationResult.class)
                             )
                     ),
                     @ApiResponse(
@@ -71,7 +72,7 @@ public class DocValidationController {
             }
     )
     @PostMapping(value = "/ades-signatures", consumes = "multipart/form-data")
-    public ResponseEntity<DocumentSignatureValidationResult> validateAdesSignature(
+    public ResponseEntity<DocumentAdesSignatureValidationResult> validateAdesSignature(
             @RequestParam(value = "document")
             @Parameter(
                     description = "The document file containing  Advanced Electronic Signatures (AdES) to validate. ",
@@ -80,8 +81,8 @@ public class DocValidationController {
             )
             MultipartFile document,
             HttpServletRequest request) throws IOException {
-        WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename(), false);
-        return ResponseEntity.ok(mapper.toValidationResult(reports, request.getLocale()));
+        WSReportsDTO reports = signatureValidationServiceLLab.validateAdesSignature(document.getBytes(), document.getOriginalFilename());
+        return ResponseEntity.ok(mapper.toAdesValidationResult(reports, request.getLocale()));
     }
 
     @Operation(
@@ -106,7 +107,7 @@ public class DocValidationController {
                             description = "Document validated successfully",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = DocumentSignatureValidationResult.class)
+                                    schema = @Schema(implementation = DocumentQesSignatureValidationResult.class)
                             )
                     ),
                     @ApiResponse(
@@ -120,7 +121,7 @@ public class DocValidationController {
             }
     )
     @PostMapping(value = "/qes-signatures", consumes = "multipart/form-data")
-    public ResponseEntity<DocumentSignatureValidationResult> validateQesSignature(
+    public ResponseEntity<DocumentQesSignatureValidationResult> validateQesSignature(
             @RequestParam(value = "document")
             @Parameter(
                     description = "The document file containing Qualified Electronic Signatures (QES) to validate. " +
@@ -130,7 +131,7 @@ public class DocValidationController {
                     content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))
             ) MultipartFile document,
             HttpServletRequest request) throws IOException {
-        WSReportsDTO reports = signatureValidationServiceLLab.validateSignature(document.getBytes(), document.getOriginalFilename(), true);
-        return ResponseEntity.ok(mapper.toValidationResult(reports, request.getLocale()));
+        WSReportsDTO reports = signatureValidationServiceLLab.validateQesSignature(document.getBytes(), document.getOriginalFilename());
+        return ResponseEntity.ok(mapper.toQesValidationResult(reports, request.getLocale()));
     }
 }

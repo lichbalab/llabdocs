@@ -1,16 +1,14 @@
 package com.lichbalab.docs.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 @Schema(description = "Result of document signature validation")
-public class DocumentSignatureValidationResult {
+public class CommonSignatureValidationResult {
     @Schema(description = "Name of the validated document")
     private String documentName;
-    
-    @Schema(description = "List of individual signature validation results")
-    private List<SignatureValidationResult> signatures;
-    
+
     @Schema(description = "Summary of validation results")
     private ValidationSummary summary;
 
@@ -45,14 +43,6 @@ public class DocumentSignatureValidationResult {
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
-    }
-
-    public List<SignatureValidationResult> getSignatures() {
-        return signatures;
-    }
-
-    public void setSignatures(List<SignatureValidationResult> signatures) {
-        this.signatures = signatures;
     }
 
     public ValidationSummary getSummary() {

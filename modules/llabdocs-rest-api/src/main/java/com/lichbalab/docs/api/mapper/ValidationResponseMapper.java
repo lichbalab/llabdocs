@@ -1,14 +1,16 @@
 package com.lichbalab.docs.api.mapper;
 
-import com.lichbalab.docs.api.model.DocumentSignatureValidationResult;
-import com.lichbalab.docs.api.model.SignatureValidationResult;
+import com.lichbalab.docs.api.model.AdesSignatureValidationResult;
+import com.lichbalab.docs.api.model.DocumentAdesSignatureValidationResult;
+import com.lichbalab.docs.api.model.DocumentQesSignatureValidationResult;
+import com.lichbalab.docs.api.model.QesSignatureValidationResult;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
@@ -30,17 +32,20 @@ public class ValidationResponseMapper {
     private final MessageSource signatureIndicationMessageSource;
 
     @Autowired
-    public ValidationResponseMapper( @Qualifier("signatureIndicationMessageSource") MessageSource signatureIndicationMessageSource) {
+    public ValidationResponseMapper(@Qualifier("signatureIndicationMessageSource") MessageSource signatureIndicationMessageSource) {
         this.signatureIndicationMessageSource = signatureIndicationMessageSource;
     }
 
-    public DocumentSignatureValidationResult toValidationResult(WSReportsDTO reportsDTO, Locale locale) {
-        DocumentSignatureValidationResult result = new DocumentSignatureValidationResult();
 
-        List<SignatureValidationResult> signatures = new ArrayList<>();
+    public DocumentAdesSignatureValidationResult toAdesValidationResult(WSReportsDTO reportsDTO, Locale locale) {
+        DocumentAdesSignatureValidationResult result = new DocumentAdesSignatureValidationResult();
+
+        List<AdesSignatureValidationResult> signatures = new ArrayList<>();
         XmlDiagnosticData data = reportsDTO.getDiagnosticData();
         if (data != null && data.getSignatures() != null) {
-            signatures.addAll(data.getSignatures().stream().map(ValidationResponseMapper::buildValidationSignatureFromDigestSignature).toList());
+            signatures.addAll(data.getSignatures().stream()
+                    .map(ValidationResponseMapper::buildAdesValidationSignatureFromDigestSignature)
+                    .toList());
         }
 
         XmlSimpleReport report = reportsDTO.getSimpleReport();
@@ -51,16 +56,16 @@ public class ValidationResponseMapper {
                 continue;
             }
 
-            for (SignatureValidationResult signature : signatures) {
-                if (signature.getSignatureId().equals(token.getId())){
-                    enrichValidationResultWithReportSignature(signature, (eu.europa.esig.dss.simplereport.jaxb.XmlSignature) token, locale);
+            for (AdesSignatureValidationResult signature : signatures) {
+                if (signature.getSignatureId().equals(token.getId())) {
+                    enrichAdesValidationResultWithReportSignature(signature, (eu.europa.esig.dss.simplereport.jaxb.XmlSignature) token, locale);
                 }
             }
         }
         result.setSignatures(signatures);
         result.setDocumentName(report.getDocumentName());
 
-        DocumentSignatureValidationResult.ValidationSummary summary = new DocumentSignatureValidationResult.ValidationSummary();
+        DocumentAdesSignatureValidationResult.ValidationSummary summary = new DocumentAdesSignatureValidationResult.ValidationSummary();
         summary.setValidSignatures(report.getValidSignaturesCount());
         summary.setTotalSignatures(report.getSignaturesCount());
         result.setSummary(summary);
@@ -68,7 +73,110 @@ public class ValidationResponseMapper {
         return result;
     }
 
-    private void enrichValidationResultWithReportSignature(SignatureValidationResult result, eu.europa.esig.dss.simplereport.jaxb.XmlSignature signature, Locale locale) {
+    public DocumentQesSignatureValidationResult toQesValidationResult(WSReportsDTO reportsDTO, Locale locale) {
+        DocumentQesSignatureValidationResult result = new DocumentQesSignatureValidationResult();
+
+        List<QesSignatureValidationResult> signatures = new ArrayList<>();
+        XmlDiagnosticData data = reportsDTO.getDiagnosticData();
+        if (data != null && data.getSignatures() != null) {
+            signatures.addAll(data.getSignatures().stream()
+                    .map(ValidationResponseMapper::buildQesValidationSignatureFromDigestSignature)
+                    .toList());
+        }
+
+        XmlSimpleReport report = reportsDTO.getSimpleReport();
+        List<XmlToken> tokens = report.getSignatureOrTimestampOrEvidenceRecord();
+
+        for (XmlToken token : tokens) {
+            if (!(token instanceof eu.europa.esig.dss.simplereport.jaxb.XmlSignature)) {
+                continue;
+            }
+
+            for (QesSignatureValidationResult signature : signatures) {
+                if (signature.getSignatureId().equals(token.getId())) {
+                    enrichQesValidationResultWithReportSignature(signature, (eu.europa.esig.dss.simplereport.jaxb.XmlSignature) token, locale);
+                }
+            }
+        }
+        result.setSignatures(signatures);
+        result.setDocumentName(report.getDocumentName());
+
+        DocumentAdesSignatureValidationResult.ValidationSummary summary = new DocumentAdesSignatureValidationResult.ValidationSummary();
+        summary.setValidSignatures(report.getValidSignaturesCount());
+        summary.setTotalSignatures(report.getSignaturesCount());
+        result.setSummary(summary);
+
+        return result;
+    }
+
+    private static AdesSignatureValidationResult buildAdesValidationSignatureFromDigestSignature(XmlSignature signature) {
+        AdesSignatureValidationResult result = new AdesSignatureValidationResult();
+        initValidationSignature(result, signature);
+        return result;
+    }
+
+    private static QesSignatureValidationResult buildQesValidationSignatureFromDigestSignature(XmlSignature signature) {
+        QesSignatureValidationResult result = new QesSignatureValidationResult();
+        initValidationSignature(result, signature);
+        return result;
+    }
+
+    private static void initValidationSignature(AdesSignatureValidationResult result, XmlSignature signature) {
+        result.setSignatureId(signature.getId());
+
+        // Set signer info
+        if (signature.getSigningCertificate() != null && signature.getSigningCertificate().getCertificate() != null) {
+            result.setSigner(signature.getSigningCertificate().getCertificate().getCommonName());
+        }
+
+        // Set times
+        if (signature.getClaimedSigningTime() != null) {
+            result.setSigningTime(signature.getClaimedSigningTime());
+        }
+        result.setValidationTime(new Date());
+
+        // Set signing certificate info
+        if (signature.getSigningCertificate() != null) {
+            AdesSignatureValidationResult.CertificateInfo certInfo = buildCertificateInfo(
+                    signature.getSigningCertificate().getCertificate());
+            result.setSigningCertificate(certInfo);
+        }
+
+        // Set certificate chain
+        if (signature.getCertificateChain() != null) {
+            result.setCertificateChain(signature.getCertificateChain().stream()
+                    .map(cert -> buildCertificateInfo(cert.getCertificate()))
+                    .toList());
+        }
+
+    }
+
+    private static AdesSignatureValidationResult.CertificateInfo buildCertificateInfo(XmlCertificate certificate) {
+        AdesSignatureValidationResult.CertificateInfo certInfo = new AdesSignatureValidationResult.CertificateInfo();
+
+        certificate.getSubjectDistinguishedName().stream().filter(xdm -> xdm.getFormat().equals(RFC2253)).findAny()
+                .ifPresent(xmlSubjectName -> certInfo.setSubject(xmlSubjectName.getValue()));
+
+        certificate.getIssuerDistinguishedName().stream().filter(xdm -> xdm.getFormat().equals(RFC2253)).findAny()
+                .ifPresent(xmlIssuerName -> certInfo.setIssuer(xmlIssuerName.getValue()));
+        certInfo.setSerialNumber(String.valueOf(certificate.getSerialNumber()));
+
+        if (certificate.getNotBefore() != null) {
+            certInfo.setValidFrom(certificate.getNotBefore());
+        }
+
+        if (certificate.getNotAfter() != null) {
+            certInfo.setValidTo(certificate.getNotAfter());
+        }
+
+        return certInfo;
+    }
+
+
+    private void enrichAdesValidationResultWithReportSignature(
+            AdesSignatureValidationResult result,
+            eu.europa.esig.dss.simplereport.jaxb.XmlSignature signature,
+            Locale locale) {
         result.setIndication(signature.getIndication().name());
         if (signature.getSubIndication() != null) {
             result.setIndicationDetails(signatureIndicationMessageSource.getMessage(
@@ -77,7 +185,7 @@ public class ValidationResponseMapper {
             ));
         }
 
-        SignatureValidationResult.ValidationDetails details = new SignatureValidationResult.ValidationDetails();
+        AdesSignatureValidationResult.ValidationDetails details = new AdesSignatureValidationResult.ValidationDetails();
         XmlDetails xmlDetails = signature.getAdESValidationDetails();
         if (xmlDetails != null) {
             details.setErrors(xmlDetails.getError().stream().map(XmlMessage::getValue).toList());
@@ -87,102 +195,30 @@ public class ValidationResponseMapper {
         result.setSignatureDetails(details);
     }
 
-    private static SignatureValidationResult buildValidationSignatureFromDigestSignature(XmlSignature signature) {
-        SignatureValidationResult result = new SignatureValidationResult();
+    private void enrichQesValidationResultWithReportSignature(
+            QesSignatureValidationResult result,
+            eu.europa.esig.dss.simplereport.jaxb.XmlSignature signature,
+            Locale locale) {
 
-        result.setSignatureId(signature.getId());
-        /*
-        // Set basic signature information
-        result.setIndication(signature.getSignatureValidationReport().getConclusion().getIndication().name());
-        if (signature.getSignatureValidationReport().getConclusion().getSubIndication() != null) {
-            result.setIndicationDetails(signature.getSignatureValidationReport().getConclusion().getSubIndication().name());
-        }
-*/
+        enrichAdesValidationResultWithReportSignature(result, signature, locale);
 
-        // Set signer info
-        if (signature.getSigningCertificate() != null && signature.getSigningCertificate().getCertificate() != null) {
-            result.setSigner(signature.getSigningCertificate().getCertificate().getCommonName());
+        QesSignatureValidationResult.QualificationInfo qualification = new QesSignatureValidationResult.QualificationInfo();
+        XmlSignatureLevel xmlSignatureLevel = signature.getSignatureLevel();
+        if (xmlSignatureLevel != null) {
+            qualification.setLevel(xmlSignatureLevel.getValue().getReadable());
+            qualification.setDescription(xmlSignatureLevel.getValue().getLabel());
         }
-        
-        // Set times
-        if (signature.getClaimedSigningTime() != null) {
-            result.setSigningTime(signature.getClaimedSigningTime());
+        AdesSignatureValidationResult.ValidationDetails validationDetails = new AdesSignatureValidationResult.ValidationDetails();
+        XmlDetails qsDetails = signature.getQualificationDetails();
+        if (qsDetails != null) {
+            validationDetails.setErrors(qsDetails.getError().stream().map(XmlMessage::getValue).toList());
+            validationDetails.setWarns(qsDetails.getWarning().stream().map(XmlMessage::getValue).toList());
+            validationDetails.setInfos(qsDetails.getWarning().stream().map(XmlMessage::getValue).toList());
         }
-        result.setValidationTime(new Date());
-        
-        // Set signing certificate info
-        if (signature.getSigningCertificate() != null) {
-            SignatureValidationResult.CertificateInfo certInfo = buildCertificateInfo(
-                signature.getSigningCertificate().getCertificate());
-            result.setSigningCertificate(certInfo);
-        }
-        
-        // Set certificate chain
-        if (signature.getCertificateChain() != null) {
-            result.setCertificateChain(signature.getCertificateChain().stream()
-                .map(cert -> buildCertificateInfo(cert.getCertificate()))
-                .toList());
-        }
-        
-        // Set signature details
-/*
-        SignatureValidationResult.ValidationDetails details = new SignatureValidationResult.ValidationDetails();
-        if (signature.getSignatureValidationReport() != null && 
-            signature.getSignatureValidationReport().getConclusion() != null) {
-            details.setErrors(signature.getSignatureValidationReport().getConclusion().getErrors());
-            details.setWarns(signature.getSignatureValidationReport().getConclusion().getWarnings());
-            details.setInfos(signature.getSignatureValidationReport().getConclusion().getInfos());
-        }
-        result.setSignatureDetails(details);
-*/
-
-        // Set qualification info
-/*
-        SignatureValidationResult.QualificationInfo qualificationInfo = new SignatureValidationResult.QualificationInfo();
-        if (signature.getSignatureQualification() != null) {
-            qualificationInfo.setLevel(signature.getSignatureQualification().name());
-            qualificationInfo.setDescription(getQualificationDescription(signature.getSignatureQualification()));
-            
-            SignatureValidationResult.ValidationDetails qualificationDetails = new SignatureValidationResult.ValidationDetails();
-            if (signature.getValidationReport() != null && 
-                signature.getValidationReport().getConclusion() != null) {
-                qualificationDetails.setErrors(signature.getValidationReport().getConclusion().getErrors());
-                qualificationDetails.setWarns(signature.getValidationReport().getConclusion().getWarnings());
-                qualificationDetails.setInfos(signature.getValidationReport().getConclusion().getInfos());
-            }
-            qualificationInfo.setDetails(qualificationDetails);
-        }
-        result.setQualification(qualificationInfo);
-*/
-
-        return result;
+        qualification.setDetails(validationDetails);
+        result.setQualification(qualification);
     }
-    
-    private static SignatureValidationResult.CertificateInfo buildCertificateInfo(XmlCertificate certificate) {
-        SignatureValidationResult.CertificateInfo certInfo = new SignatureValidationResult.CertificateInfo();
-        
-        XmlDistinguishedName xmlSubjectName = certificate.getSubjectDistinguishedName().stream().filter(xdm -> xdm.getFormat().equals(RFC2253)).findAny().orElse(null);
-        if (xmlSubjectName != null) {
-            certInfo.setSubject(xmlSubjectName.getValue());
-        }
 
-        XmlDistinguishedName xmlIssuerName = certificate.getIssuerDistinguishedName().stream().filter(xdm -> xdm.getFormat().equals(RFC2253)).findAny().orElse(null);
-        if (xmlIssuerName != null) {
-            certInfo.setIssuer(xmlIssuerName.getValue());
-        }
-        certInfo.setSerialNumber(String.valueOf(certificate.getSerialNumber()));
-        
-        if (certificate.getNotBefore() != null) {
-            certInfo.setValidFrom( certificate.getNotBefore());
-        }
-        
-        if (certificate.getNotAfter() != null) {
-            certInfo.setValidTo(certificate.getNotAfter());
-        }
-        
-        return certInfo;
-    }
-    
     private String getQualificationDescription(SignatureQualification qualification) {
         return switch (qualification) {
             case QESIG -> "Qualified Electronic Signature";
@@ -195,6 +231,5 @@ public class ValidationResponseMapper {
             default -> "Unknown Qualification";
         };
     }
-
 
 }

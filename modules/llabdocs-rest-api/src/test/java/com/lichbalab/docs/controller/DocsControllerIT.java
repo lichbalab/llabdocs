@@ -1,7 +1,7 @@
 package com.lichbalab.docs.controller;
 
 import com.lichbalab.cmc.spring.sdk.test.BaseIntegrationTest;
-import com.lichbalab.docs.api.model.DocumentSignatureValidationResult;
+import com.lichbalab.docs.api.model.DocumentAdesSignatureValidationResult;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +32,7 @@ public class DocsControllerIT extends BaseIntegrationTest {
         File fileToUpload = new File("src/test/resources/docs/" + documentName);
 
         Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/signature");
-        DocumentSignatureValidationResult result = response.as(DocumentSignatureValidationResult.class);
+        DocumentAdesSignatureValidationResult result = response.as(DocumentAdesSignatureValidationResult.class);
 
         Assertions.assertEquals(200, response.statusCode());
         Assertions.assertEquals("application/json", response.getContentType());
@@ -45,7 +45,7 @@ public class DocsControllerIT extends BaseIntegrationTest {
         File fileToUpload = new File("src/test/resources/docs/" + documentName);
 
         Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/signature");
-        DocumentSignatureValidationResult result = response.as(DocumentSignatureValidationResult.class);
+        DocumentAdesSignatureValidationResult result = response.as(DocumentAdesSignatureValidationResult.class);
 
         Assertions.assertEquals(200, response.statusCode());
         Assertions.assertEquals("application/json", response.getContentType());
