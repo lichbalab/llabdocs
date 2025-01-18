@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-
 @RequestMapping("/docs/validate")
 public class DocValidationController {
     private final SignatureValidationServiceLLab signatureValidationServiceLLab;
@@ -120,7 +119,7 @@ public class DocValidationController {
                     )
             }
     )
-    @PostMapping(value = "/ges-signatures", consumes = "multipart/form-data")
+    @PostMapping(value = "/qes-signatures", consumes = "multipart/form-data")
     public ResponseEntity<DocumentSignatureValidationResult> validateQesSignature(
             @RequestParam(value = "document")
             @Parameter(

@@ -17,7 +17,7 @@ public class SignatureValidationServiceLLabImpl implements SignatureValidationSe
 
     @Autowired
     public SignatureValidationServiceLLabImpl(
-            @Qualifier("remoteValidationService") RemoteDocumentValidationService validationService,
+            @Qualifier("remoteQesValidationService") RemoteDocumentValidationService validationService,
             @Qualifier("remoteAdesValidationService") RemoteDocumentValidationService adesValidationService
     ) {
         this.validationService = validationService;

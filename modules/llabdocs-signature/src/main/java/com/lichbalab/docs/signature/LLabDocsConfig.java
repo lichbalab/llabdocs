@@ -37,10 +37,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,12 +124,27 @@ public class LLabDocsConfig {
 
 
     @Bean
-    public CertificateVerifier certificateVerifier() {
+    public CertificateVerifier qesCertificateVerifier() {
         CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
         certificateVerifier.setCrlSource(cachedCRLSource());
         certificateVerifier.setOcspSource(cachedOCSPSource());
         certificateVerifier.setAIASource(cachedAIASource());
         certificateVerifier.setTrustedCertSources(trustedListSource(), trustedCertificateSource());
+
+        // Default configs
+        certificateVerifier.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
+        certificateVerifier.setCheckRevocationForUntrustedChains(false);
+
+        return certificateVerifier;
+    }
+
+    @Bean
+    public CertificateVerifier adesCertificateVerifier() {
+        CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setCrlSource(cachedCRLSource());
+        certificateVerifier.setOcspSource(cachedOCSPSource());
+        certificateVerifier.setAIASource(cachedAIASource());
+        certificateVerifier.setTrustedCertSources(globalTrustedCASource());
 
         // Default configs
         certificateVerifier.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
@@ -302,25 +317,16 @@ public class LLabDocsConfig {
 
 
     @Bean
-    public RemoteDocumentValidationService remoteValidationService() {
+    public RemoteDocumentValidationService remoteQesValidationService() {
         RemoteDocumentValidationService service = new RemoteDocumentValidationService();
-        service.setVerifier(certificateVerifier());
-/*
-        if (defaultPolicy() != null) {
-            try (InputStream is = defaultPolicy().getInputStream()) {
-                service.setDefaultValidationPolicy(is);
-            } catch (IOException e) {
-                LOG.error(String.format("Unable to parse policy: %s", e.getMessage()), e);
-            }
-        }
-*/
+        service.setVerifier(qesCertificateVerifier());
         return service;
     }
 
     @Bean
     public RemoteDocumentValidationService remoteAdesValidationService() {
         RemoteDocumentValidationService service = new RemoteDocumentValidationService();
-        service.setVerifier(certificateVerifier());
+        service.setVerifier(adesCertificateVerifier());
         File file = new File(adesPolicyFilename);
 
         try (InputStream is = Files.newInputStream(file.toPath())) {
@@ -342,6 +348,13 @@ public class LLabDocsConfig {
                 throw new DSSException("Unable to load the file " + trustSourceKsFilename, e);
             }
         }
+        return trustedCertificateSource;
+    }
+
+    public CommonTrustedCertificateSource globalTrustedCASource() {
+        CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+        KeyStoreCertificateSource globalKeystore = new KeyStoreCertificateSource((InputStream) null, KeyStore.getDefaultType(), null);
+        trustedCertificateSource.importAsTrusted(globalKeystore);
         return trustedCertificateSource;
     }
 
