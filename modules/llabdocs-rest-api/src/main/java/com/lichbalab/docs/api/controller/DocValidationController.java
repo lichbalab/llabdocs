@@ -38,7 +38,7 @@ public class DocValidationController {
             summary = "Validates Advanced Electronic Signatures (AdES) in a Document",
             description = """
                         This endpoint validates Advanced Electronic Signatures (AdES) in a document to ensure their authenticity, 
-                        integrity, and compliance with standards like eIDAS. AdES includes various formats such as XAdES, CAdES, PAdES, and ASiC.  
+                        integrity, and compliance with standards like eIDAS.
                         The validation process includes:  
                     
                         1. Extracting the Signature: Identifies and extracts the AdES signature(s) and metadata from the document.  
@@ -49,7 +49,7 @@ public class DocValidationController {
                            - Checks for certificate revocation status using CRL (Certificate Revocation List) and OCSP (Online Certificate Status Protocol).  
                            - Ensures the certificates are issued by trusted Certificate Authorities (CAs).  
                     
-                        This operation is crucial for verifying document authenticity, ensuring data integrity, and maintaining compliance with international digital signature standards.  
+                        The method supports signature validation for the following document formats: PDF, XML.                      
                     """,
             tags = {"Advanced Electronic Signature Validation"},
             responses = {
@@ -75,7 +75,7 @@ public class DocValidationController {
     public ResponseEntity<DocumentAdesSignatureValidationResult> validateAdesSignature(
             @RequestParam(value = "document")
             @Parameter(
-                    description = "The document file containing  Advanced Electronic Signatures (AdES) to validate. ",
+                    description = "The document file (PDF, XML) containing  Advanced Electronic Signatures (AdES) to validate. ",
                     required = true,
                     content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "string", format = "binary"))
             )
@@ -99,6 +99,8 @@ public class DocValidationController {
                            - Verifies the certificate's qualification status using extensions and identifiers defined in standards such as ETSI EN 319 412.
                            - Ensures that the issuing Certificate Authority (CA) is on an officially trusted list (e.g., EU Trusted List).
                         4. Regulatory Compliance Check: Verifies that the signature fulfills all legal and technical requirements for QES as per eIDAS.        
+                     
+                        The method supports signature validation for the following document formats: PDF, XML.                      
                     """,
             tags = {"Qualified Electronic Signature Validation"},
             responses = {
@@ -124,7 +126,7 @@ public class DocValidationController {
     public ResponseEntity<DocumentQesSignatureValidationResult> validateQesSignature(
             @RequestParam(value = "document")
             @Parameter(
-                    description = "The document file containing Qualified Electronic Signatures (QES) to validate. " +
+                    description = "The document file (PDF, XML) containing Qualified Electronic Signatures (QES) to validate. " +
                             "The document should contain signatures created with qualified certificates " +
                             "from trusted Certificate Authorities (CAs).",
                     required = true,
