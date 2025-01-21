@@ -37,6 +37,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8081 --cmc.sdk.ba
 If you prefer Docker, you can build an image using:
 ```bash
 docker build -t lichbalab:llabdocs-2024.1 .
+docker build -t registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1 .
 ```
 This command builds a Docker image tagged `lichbalab:llabdocs-2024.1`.
 
@@ -89,7 +90,8 @@ kubectl exec -it deployment/llabdocs-deployment -- ls -la /logs
 
 To check the contents of the logs directory:
 ```bash
-kubectl exec -it deployment/llabdocs-deployment -- cat /logs/application.log       
+kubectl exec -it deployment/llabdocs-deployment -- cat /logs/application.log   
+kubectl exec -it deployment/llabdocs-deployment -- tail -f /logs/application.log     
 ```
 
 Copy logs from the pod to your local machine:
