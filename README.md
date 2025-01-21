@@ -50,6 +50,7 @@ This starts the Docker container in detached mode.
 ### 6. Deploy the Application in K8s
 Run the Docker image with:
 ```bash
+kubectl apply -f kubernetes-logs-pvc.yaml
 kubectl apply -f kubernetes-deployment.yaml 
 ```
 
@@ -74,3 +75,24 @@ kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}
 
 ```
 
+### 10. View logs
+
+To view logs directly from the running pod:
+```bash
+kubectl logs -f deployment/llabdocs-deployment  
+```
+
+To check the contents of the logs directory:
+```bash
+kubectl exec -it deployment/llabdocs-deployment -- ls -la /logs   
+```
+
+To check the contents of the logs directory:
+```bash
+kubectl exec -it deployment/llabdocs-deployment -- cat /logs/application.log       
+```
+
+Copy logs from the pod to your local machine:
+```bash
+kubectl cp default/$(kubectl get pod -l app=llabdocs -o jsonpath='{.items[0].metadata.name}'):/logs/application.log ./application.log
+```
