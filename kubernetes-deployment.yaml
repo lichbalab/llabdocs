@@ -4,8 +4,15 @@ metadata:
   name: llabdocs-deployment
   labels:
     app: llabdocs
+    version: "2024.1"
+    environment: production
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: llabdocs
@@ -13,13 +20,38 @@ spec:
     metadata:
       labels:
         app: llabdocs
+        version: "2024.1"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
       containers:
       - name: llabdocs
         image: lichbalab:llabdocs-2024.1
         ports:
         - containerPort: 8080
+          name: http
         - containerPort: 5005
+          name: debug
+        env:
+        - name: JAVA_OPTS
+#          value: "-Xms512m -Xmx1024m"
+          value: "-XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0"
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
         resources:
           limits:
             cpu: "1000m"

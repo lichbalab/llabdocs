@@ -67,4 +67,10 @@ kubectl get svc llabdocs-service
 ### 9. Start K8S GUI
 ```bash
 kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+
+kubectl apply -f dashboard-adminuser.yaml
+
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 -d
+
 ```
+
