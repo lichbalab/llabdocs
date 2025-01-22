@@ -38,6 +38,10 @@ If you prefer Docker, you can build an image using:
 ```bash
 docker build -t lichbalab:llabdocs-2024.1 .
 docker build -t registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1 .
+docker push registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1
+docker buildx create --use                                                                     
+docker buildx build --platform linux/amd64,linux/arm64 -t registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1 --push .
+
 ```
 This command builds a Docker image tagged `lichbalab:llabdocs-2024.1`.
 
@@ -98,3 +102,27 @@ Copy logs from the pod to your local machine:
 ```bash
 kubectl cp default/$(kubectl get pod -l app=llabdocs -o jsonpath='{.items[0].metadata.name}'):/logs/application.log ./application.log
 ```
+
+### 10. Deploy build to Cloud 
+
+1 Build package:
+```bash
+mvn clean install -DskipTests=true docker buildx build --platform linux/amd64 -t registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1 --push .
+```
+
+2 Build image and push it to registry:
+```bash
+docker buildx create --use
+docker buildx build --platform linux/amd64 -t registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1 --push .
+```
+
+3 Apply deployment:
+```bash
+kubectl apply -f kubernetes-deployment.yaml
+```
+4 Get logs
+```bash
+kubectl logs <pod-code>
+```
+
+

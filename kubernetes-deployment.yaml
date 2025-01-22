@@ -7,7 +7,7 @@ metadata:
     version: "2024.1"
     environment: production
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -20,7 +20,6 @@ spec:
     metadata:
       labels:
         app: llabdocs
-        version: "2024.1"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -32,7 +31,8 @@ spec:
           claimName: llabdocs-logs-pvc
       containers:
       - name: llabdocs
-        image: lichbalab:llabdocs-2024.1
+        image: registry.digitalocean.com/lichbalab-registry/lichbalab:llabdocs-2024.1
+        imagePullPolicy: Always
         volumeMounts:
         - name: logs-volume
           mountPath: /logs
@@ -42,8 +42,6 @@ spec:
         ports:
         - containerPort: 8080
           name: http
-        - containerPort: 5005
-          name: debug
         env:
         - name: JAVA_OPTS
 #          value: "-Xms512m -Xmx1024m"
@@ -64,25 +62,41 @@ spec:
           periodSeconds: 10
         resources:
           limits:
-            cpu: "1000m"
+            cpu: "1"
             memory: "1024Mi"
           requests:
-            cpu: "500m"
+            cpu: "0.5"
             memory: "512Mi"
+      imagePullSecrets:
+      - name: do-registry
+volumeClaimTemplates:
+  - metadata:
+      name: logs-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: llabdocs-service
   annotations:
-    kubernetes.digitalocean.com/load-balancer-id: "llabdocs-lb"
-    service.beta.kubernetes.io/do-loadbalancer-size-unit: "1"
-    service.beta.kubernetes.io/do-loadbalancer-disable-lets-encrypt-dns-records: "false"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"  # Specify protocol
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/actuator/health"  # Health check path
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "8080"  # Health check port (should match the targetPort)
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"  # Health check protocol
+#  annotations:
+#    kubernetes.digitalocean.com/load-balancer-id: "llabdocs-lb"
+#    service.beta.kubernetes.io/do-loadbalancer-size-unit: "1"
+#    service.beta.kubernetes.io/do-loadbalancer-disable-lets-encrypt-dns-records: "false"
 spec:
   selector:
     app: llabdocs
   ports:
-    - name: https
-      port: 443
+    - name: http
+      port: 8080
       targetPort: 8080
   type: LoadBalancer
