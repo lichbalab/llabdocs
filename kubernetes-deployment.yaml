@@ -7,7 +7,7 @@ metadata:
     version: "2024.1"
     environment: production
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -69,25 +69,19 @@ spec:
             memory: "512Mi"
       imagePullSecrets:
       - name: do-registry
-volumeClaimTemplates:
-  - metadata:
-      name: logs-volume
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: llabdocs-service
   annotations:
-    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"  # Specify protocol
     service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/actuator/health"  # Health check path
     service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "8080"  # Health check port (should match the targetPort)
     service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"  # Health check protocol
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "https"
+    service.beta.kubernetes.io/do-loadbalancer-certificate-name: "llab-docs-cert"
+    service.beta.kubernetes.io/do-loadbalancer-hostname: "docs.lichbalab.services"
+    #service.beta.kubernetes.io/do-loadbalancer-disable-lets-encrypt-dns-records: "false"
 #  annotations:
 #    kubernetes.digitalocean.com/load-balancer-id: "llabdocs-lb"
 #    service.beta.kubernetes.io/do-loadbalancer-size-unit: "1"
@@ -96,7 +90,71 @@ spec:
   selector:
     app: llabdocs
   ports:
-    - name: http
-      port: 8080
+    - name: https
+      protocol: TCP
+      port: 443
       targetPort: 8080
   type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 107.23.255.128/32
+    - 107.23.255.129/32
+    - 107.23.255.131/32
+    - 107.23.255.132/32
+    - 107.23.255.133/32
+    - 107.23.255.134/32
+    - 107.23.255.135/32
+    - 107.23.255.137/32
+    - 107.23.255.138/32
+    - 107.23.255.139/32
+    - 107.23.255.140/32
+    - 107.23.255.141/32
+    - 107.23.255.142/32
+    - 107.23.255.143/32
+    - 107.23.255.144/32
+    - 107.23.255.145/32
+    - 107.23.255.146/32
+    - 107.23.255.147/32
+    - 107.23.255.148/32
+    - 107.23.255.149/32
+    - 107.23.255.150/32
+    - 107.23.255.151/32
+    - 107.23.255.152/32
+    - 107.23.255.153/32
+    - 107.23.255.154/32
+    - 107.23.255.155/32
+    - 107.23.255.156/32
+    - 107.23.255.157/32
+    - 107.23.255.158/32
+    - 107.23.255.159/32
+    - 35.162.152.183/32
+    - 52.38.28.241/32
+    - 52.35.67.149/32
+    - 54.149.215.237/32
+    - 13.127.146.34/32
+    - 13.127.207.241/32
+    - 13.232.235.243/32
+    - 13.233.81.143/32
+    - 13.112.233.15/32
+    - 54.250.57.56/32
+    - 18.182.156.77/32
+    - 52.194.200.157/32
+    - 3.120.160.95/32
+    - 18.184.214.33/32
+    - 18.197.117.10/32
+    - 3.121.144.151/32
+    - 13.239.156.114/32
+    - 13.238.1.253/32
+    - 13.54.58.4/32
+    - 54.153.234.158/32
+    - 18.228.167.221/32
+    - 18.228.209.157/32
+    - 18.228.209.53/32
+    - 18.228.69.72/32
+    - 13.228.169.5/32
+    - 3.0.35.31/32
+    - 3.1.111.112/32
+    - 52.220.50.179/32
+    - 34.250.225.89/32
+    - 52.30.208.221/32
+    - 63.34.177.151/32
+    - 63.35.2.11/32

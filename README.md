@@ -103,6 +103,11 @@ Copy logs from the pod to your local machine:
 kubectl cp default/$(kubectl get pod -l app=llabdocs -o jsonpath='{.items[0].metadata.name}'):/logs/application.log ./application.log
 ```
 
+Get Services:
+```bash
+ kubectl get services 
+```
+
 ### 10. Deploy build to Cloud 
 
 1 Build package:
