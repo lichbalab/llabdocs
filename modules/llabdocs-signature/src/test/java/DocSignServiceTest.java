@@ -26,7 +26,7 @@ class DocSignServiceTest {
 
     @Test
     void signPdfTest() throws IOException {
-        File signCertFile = new File("src/test/resources/certs/test.pem");
+        File signCertFile = new File("src/test/resources/certs/llabdocs.com.pem");
         Certificate signCert = CertificateUtils.buildFromPEM(new FileReader(signCertFile));
         FileInputStream doc = new FileInputStream("src/test/resources/docs/test_doc_for_sign.pdf");
         CmcClientTest cmcClientTest = new CmcClientTest(signCert);
