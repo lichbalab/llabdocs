@@ -31,7 +31,7 @@ public class DocsControllerIT extends BaseIntegrationTest {
         String documentName = "test_doc_signed.pdf";
         File fileToUpload = new File("src/test/resources/docs/" + documentName);
 
-        Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/signature");
+        Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/ades-signatures");
         DocumentAdesSignatureValidationResult result = response.as(DocumentAdesSignatureValidationResult.class);
 
         Assertions.assertEquals(200, response.statusCode());
@@ -44,7 +44,7 @@ public class DocsControllerIT extends BaseIntegrationTest {
         String documentName = "pdf-signed-corrupted.pdf";
         File fileToUpload = new File("src/test/resources/docs/" + documentName);
 
-        Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/signature");
+        Response response = given().multiPart("document", fileToUpload).when().post("/docs/validate/ades-signatures");
         DocumentAdesSignatureValidationResult result = response.as(DocumentAdesSignatureValidationResult.class);
 
         Assertions.assertEquals(200, response.statusCode());
