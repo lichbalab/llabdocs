@@ -1,5 +1,5 @@
 <configuration>
-    <property name="LOG_PATH" value="/logs" />
+    <property name="LOG_PATH" value="${user.home}/logs" />
     <property name="LOG_FILE" value="application.log" />
 
     <!-- Appenders -->
