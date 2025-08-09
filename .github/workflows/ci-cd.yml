@@ -27,6 +27,9 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: maven
+          server-id: github # matches <id> in pom.xml
+          server-username: lichbalab
+          server-password: ${{ secrets.GH_REPO_BUILD_TOKEN }}
 
       - name: Build with Maven (skip tests for speed – adjust if needed)
         run: mvn -B -ntp -DskipTests package
