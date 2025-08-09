@@ -10,6 +10,6 @@ COPY modules/llabdocs-rest-api/target/certs/ /llabdocs/certs/
 COPY modules/llabdocs-rest-api/target/policy/ /llabdocs/policy/
 
 # Specify the entry point for the application
-# ENTRYPOINT ["java","-jar","/llabdocs/llabdocs-rest-api.jar"]
+ENTRYPOINT ["java","-jar","/llabdocs/llabdocs-rest-api.jar"]
 # Debug mode
-ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar","/llabdocs/llabdocs-rest-api.jar"]
+#ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar","/llabdocs/llabdocs-rest-api.jar"]
