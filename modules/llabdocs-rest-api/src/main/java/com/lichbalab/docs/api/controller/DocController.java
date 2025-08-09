@@ -1,7 +1,6 @@
 package com.lichbalab.docs.api.controller;
 
 import com.lichbalab.docs.signature.DocSignService;
-import com.lichbalab.docs.signature.SignatureValidationServiceLLab;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
