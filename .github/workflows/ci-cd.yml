@@ -2,7 +2,10 @@ name: CI / CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - master        # trigger when repo uses the old default branch
+  workflow_dispatch:   # allow manual runs from the Actions tab
 
 env:
   IMAGE_NAME: lichbalab/llabdocs-images
