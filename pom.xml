@@ -86,6 +86,13 @@
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/lichbalab/cmconnect</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
