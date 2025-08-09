@@ -32,7 +32,7 @@ jobs:
           server-password: ${{ secrets.GH_REPO_BUILD_TOKEN }}
 
       - name: Build with Maven (skip tests for speed – adjust if needed)
-        run: mvn -B -ntp -DskipTests package
+        run: mvn -B -U -ntp -DskipTests package
 
       - name: Define image tag
         id: vars
