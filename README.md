@@ -129,6 +129,6 @@ kubectl apply -f kubernetes-deployment.yaml
 ```bash
 kubectl logs <pod-code>
 ```
-5.0
+5.1
 
 
