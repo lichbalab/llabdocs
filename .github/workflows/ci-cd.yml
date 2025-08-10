@@ -44,7 +44,7 @@ jobs:
         run: |
           VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
           GIT_SHA=$(git rev-parse --short=7 HEAD)
-          echo "tag=${VERSION}-${GIT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "tag=build-${VERSION}-${GIT_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
