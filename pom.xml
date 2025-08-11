@@ -39,6 +39,7 @@
     <modules>
         <module>modules/llabdocs-signature</module>
         <module>modules/llabdocs-rest-api</module>
+        <module>modules/llabdocs-ui</module>
     </modules>
 
     <dependencyManagement>
