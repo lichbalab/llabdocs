@@ -39,3 +39,4 @@ build/
 /.idea/
 /.idea/
 .aider*
+/modules/llabdocs-ui/node_modules/
