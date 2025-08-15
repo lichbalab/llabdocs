@@ -5,6 +5,58 @@ services:
   llabdocs:
     image: lichbalab:llabdocs-2024.1
     ports:
+      - "8081:8080"
+      #- "5005:5005" #Debug port
+    restart: always
+    environment:
+      CMS_SDK_ENABLED: true
+      CMS_SDK_BASE_URL: http://cmc:8080
+      CMC_SDK_SSL_BUNDLE_KEY_ALIAS : llabdocs-cert
+
+    depends_on:
+      - cmc
+    networks:
+      llab-network:
+        aliases:
+          - llabdocs
+
+  cmc:
+    image: lichbalab:cmc-2024.1
+    ports:
       - "8080:8080"
       - "5005:5005" #Debug port
     restart: always
+    environment:
+      DB_HOST: cmc-postgres
+      DB_PORT: 5432
+      DB_NAME: ksc
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
+    depends_on:
+      - postgres
+    networks:
+      llab-network:
+        aliases:
+          - cmc
+
+  # PostgreSQL service
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ksc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      llab-network:
+        aliases:
+          - cmc-postgres
+
+volumes:
+  pgdata:
+
+networks:
+  llab-network:
+    ipam:
+      driver: default
