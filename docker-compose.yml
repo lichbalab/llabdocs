@@ -9,8 +9,8 @@ services:
       #- "5005:5005" #Debug port
     restart: always
     environment:
-      CMS_SDK_ENABLED: true
-      CMS_SDK_BASE_URL: http://cmc:8080
+      CMC_SDK_ENABLED: true
+      CMC_SDK_BASE_URL: http://cmc:8080
       CMC_SDK_SSL_BUNDLE_KEY_ALIAS : llabdocs-cert
 
     depends_on:
