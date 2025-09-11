@@ -13,9 +13,10 @@ import Paper from "@mui/material/Paper";
 
 function CertificateTable({ certificates }) {
   if (!certificates?.length) return null;
+  const wrapCell = { sx: { wordBreak: "break-all" } };
   return (
     <Paper variant="outlined" sx={{ my: 2 }}>
-      <Table size="small">
+      <Table size="small" sx={{ tableLayout: "fixed", width: "100%" }}>
         <TableBody>
           {certificates.map((c, idx) => (
             <React.Fragment key={idx}>
@@ -28,23 +29,23 @@ function CertificateTable({ certificates }) {
               </TableRow>
               <TableRow>
                 <TableCell>Subject</TableCell>
-                <TableCell>{c.subject}</TableCell>
+                <TableCell {...wrapCell}>{c.subject}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Issuer</TableCell>
-                <TableCell>{c.issuer}</TableCell>
+                <TableCell {...wrapCell}>{c.issuer}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Serial Number</TableCell>
-                <TableCell>{c.serialNumber}</TableCell>
+                <TableCell {...wrapCell}>{c.serialNumber}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Valid From</TableCell>
-                <TableCell>{c.validFrom}</TableCell>
+                <TableCell {...wrapCell}>{c.validFrom}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Valid To</TableCell>
-                <TableCell>{c.validTo}</TableCell>
+                <TableCell {...wrapCell}>{c.validTo}</TableCell>
               </TableRow>
               {idx < certificates.length - 1 && (
                 <TableRow>
