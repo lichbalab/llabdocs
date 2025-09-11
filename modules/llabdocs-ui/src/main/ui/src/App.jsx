@@ -17,24 +17,31 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleValidate = async (file) => {
+  const doValidate = async (file, type) => {
     setError("");
     setResult(null);
     setLoading(true);
     try {
-      const res =
-        tab === "ades"
-          ? await validateAdes(file)
-          : await validateQes(file);
+      const res = type === "ades" ? await validateAdes(file) : await validateQes(file);
       setResult(res.data);
     } catch (e) {
-      setError(
-        e.response?.data?.message ||
-          "Unexpected error occurred during validation."
-      );
+      setError(e.response?.data?.message || "Unexpected error occurred during validation.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleValidate = async (file) => {
+    setSelectedFile(file);
+    await doValidate(file, tab);
+  };
+
+  const handleTabChange = async (e, v) => {
+    setTab(v);
+    if (selectedFile) {
+      await doValidate(selectedFile, v);
     }
   };
 
@@ -51,7 +58,7 @@ export default function App() {
         <Paper elevation={2} sx={{ p: 3, mt: 3 }}>
           <Tabs
             value={tab}
-            onChange={(e, v) => setTab(v)}
+            onChange={handleTabChange}
             aria-label="signature type"
             centered
             sx={{ mb: 2 }}
