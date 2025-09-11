@@ -7,8 +7,9 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/docs": {
-        target: "http://localhost:8081",
-        changeOrigin: true
+        target: "https://localhost:8081",
+        changeOrigin: true,
+        secure: false
       }
     }
   },

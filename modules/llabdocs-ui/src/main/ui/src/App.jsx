@@ -6,6 +6,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import FileUpload from "./components/FileUpload.jsx";
 import ResultCard from "./components/ResultCard.jsx";
 import { validateAdes, validateQes } from "./api/validationApi.js";
@@ -39,21 +41,29 @@ export default function App() {
   return (
     <Container maxWidth="md">
       <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Document Signature Validator
+        <Typography variant="h3" component="h1" gutterBottom align="center" className="hero-title">
+          LLabDocs Signature Validator
+        </Typography>
+        <Typography variant="subtitle1" align="center" gutterBottom>
+          Validate and inspect digital signatures in your PDF or XML documents
         </Typography>
 
-        <Tabs
-          value={tab}
-          onChange={(e, v) => setTab(v)}
-          aria-label="signature type"
-          sx={{ mb: 2 }}
-        >
+        <Paper elevation={2} sx={{ p: 3, mt: 3 }}>
+          <Tabs
+            value={tab}
+            onChange={(e, v) => setTab(v)}
+            aria-label="signature type"
+            centered
+            sx={{ mb: 2 }}
+          >
           <Tab value="ades" label="AdES Validation" />
           <Tab value="qes" label="QES Validation" />
         </Tabs>
 
-        <FileUpload onValidate={handleValidate} />
+        <Stack direction="column" spacing={2} alignItems="center">
+          <FileUpload onValidate={handleValidate} />
+        </Stack>
+        </Paper>
 
         {loading && (
           <Box textAlign="center" mt={4}>
