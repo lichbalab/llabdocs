@@ -52,7 +52,7 @@
                         <goals><goal>npm</goal></goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>ci</arguments>
+                            <arguments>install</arguments>
                             <!--<arguments>install</arguments>-->
                         </configuration>
                     </execution>
