@@ -53,6 +53,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <arguments>ci</arguments>
+                            <!--<arguments>ci</arguments>-->
                         </configuration>
                     </execution>
 
