@@ -1,0 +1,10 @@
+
+body {
+  font-family: Roboto, sans-serif;
+}
+
+.hero-title {
+  background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

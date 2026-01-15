@@ -350,8 +350,34 @@ public class LLabDocsConfig {
 
     public CommonTrustedCertificateSource globalTrustedCASource() {
         CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
-        KeyStoreCertificateSource globalKeystore = new KeyStoreCertificateSource((InputStream) null, KeyStore.getDefaultType(), null);
+
+        // Determine path, type and password of the default Java trust store
+        String trustStorePath = System.getProperty("javax.net.ssl.trustStore");
+        String trustStorePasswordProp = System.getProperty("javax.net.ssl.trustStorePassword");
+        String trustStoreType = System.getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
+
+        char[] trustStorePassword = trustStorePasswordProp != null ? trustStorePasswordProp.toCharArray() : null;
+
+        File trustStoreFile;
+        if (Utils.isStringNotEmpty(trustStorePath)) {
+            trustStoreFile = new File(trustStorePath);
+        } else {
+            // Fallback to the default cacerts bundled with the JRE
+            trustStoreFile = new File(System.getProperty("java.home")
+                    + File.separator + "lib"
+                    + File.separator + "security"
+                    + File.separator + "cacerts");
+        }
+
+        // Import certificates from the global trust store
+        KeyStoreCertificateSource globalKeystore = null;
+        try {
+            globalKeystore = new KeyStoreCertificateSource(trustStoreFile, trustStoreType, trustStorePassword);
+        } catch (IOException e) {
+            throw new DSSException("Unable to load the file " + trustStoreFile, e);
+        }
         trustedCertificateSource.importAsTrusted(globalKeystore);
+
         return trustedCertificateSource;
     }
 
