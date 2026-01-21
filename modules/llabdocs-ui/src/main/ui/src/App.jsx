@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -18,13 +18,34 @@ export default function App() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState("");
+
+  const handleGoogleCredential = (response) => {
+    setAuthToken(response.credential);
+    setIsAuthenticated(true);
+  };
+
+  useEffect(() => {
+    /* global google */
+    if (!isAuthenticated && window.google && window.google.accounts) {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID",
+        callback: handleGoogleCredential
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("g_id_signin"),
+        { theme: "outline", size: "large" }
+      );
+    }
+  }, [isAuthenticated]);
 
   const doValidate = async (file, type) => {
     setError("");
     setResult(null);
     setLoading(true);
     try {
-      const res = type === "ades" ? await validateAdes(file) : await validateQes(file);
+      const res = type === "ades" ? await validateAdes(file, authToken) : await validateQes(file, authToken);
       setResult(res.data);
     } catch (e) {
       setError(e.response?.data?.message || "Unexpected error occurred during validation.");
@@ -55,6 +76,11 @@ export default function App() {
           Validate and inspect digital signatures in your PDF or XML documents
         </Typography>
 
+        {!isAuthenticated && (
+          <Box textAlign="center" mt={2}>
+            <div id="g_id_signin"></div>
+          </Box>
+        )}
         <Paper elevation={2} sx={{ p: 3, mt: 3 }}>
           <Tabs
             value={tab}
@@ -68,7 +94,7 @@ export default function App() {
         </Tabs>
 
         <Stack direction="column" spacing={2} alignItems="center">
-          <FileUpload onValidate={handleValidate} />
+          <FileUpload onValidate={handleValidate} disabled={!isAuthenticated} />
         </Stack>
         </Paper>
 
