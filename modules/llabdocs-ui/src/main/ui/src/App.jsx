@@ -8,6 +8,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
 import FileUpload from "./components/FileUpload.jsx";
 import ResultCard from "./components/ResultCard.jsx";
 import { validateAdes, validateQes } from "./api/validationApi.js";
@@ -20,17 +22,47 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userPicture, setUserPicture] = useState("");
+  const [googleClientId, setGoogleClientId] = useState("");
 
   const handleGoogleCredential = (response) => {
     setAuthToken(response.credential);
+    try {
+      const payload = JSON.parse(atob(response.credential.split(".")[1]));
+      setUserName(payload.name || payload.email || "");
+      setUserPicture(payload.picture || "");
+    } catch (e) {
+      console.error("Failed to decode ID token", e);
+    }
     setIsAuthenticated(true);
   };
+
+  const handleLogout = () => {
+    try {
+      window.google?.accounts.id.disableAutoSelect();
+    } catch (e) {
+      /* ignore */
+    }
+    setAuthToken("");
+    setIsAuthenticated(false);
+    setUserName("");
+    setUserPicture("");
+  };
+
+  // Fetch Google OAuth client-id from backend once on mount
+  useEffect(() => {
+    fetch("/api/config/google-client-id")
+      .then((res) => res.text())
+      .then((id) => setGoogleClientId(id))
+      .catch((err) => console.error("Failed to load google-client-id:", err));
+  }, []);
 
   useEffect(() => {
     /* global google */
     if (!isAuthenticated && window.google && window.google.accounts) {
       window.google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID",
+        client_id: googleClientId || import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID",
         callback: handleGoogleCredential
       });
       window.google.accounts.id.renderButton(
@@ -38,7 +70,7 @@ export default function App() {
         { theme: "outline", size: "large" }
       );
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, googleClientId]);
 
   const doValidate = async (file, type) => {
     setError("");
@@ -76,9 +108,23 @@ export default function App() {
           Validate and inspect digital signatures in your PDF or XML documents
         </Typography>
 
-        {!isAuthenticated && (
+        {!isAuthenticated ? (
           <Box textAlign="center" mt={2}>
             <div id="g_id_signin"></div>
+          </Box>
+        ) : (
+          <Box textAlign="center" mt={2}>
+            <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
+              {userPicture ? (
+                <Avatar alt={userName} src={userPicture} />
+              ) : (
+                <Avatar>{userName.charAt(0)}</Avatar>
+              )}
+              <Typography variant="subtitle1">{userName}</Typography>
+              <Button variant="outlined" size="small" onClick={handleLogout}>
+                Log out
+              </Button>
+            </Stack>
           </Box>
         )}
         <Paper elevation={2} sx={{ p: 3, mt: 3 }}>

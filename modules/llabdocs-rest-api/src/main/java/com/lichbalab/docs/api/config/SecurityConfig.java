@@ -15,11 +15,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/actuator/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                .requestMatchers(
+                    "/", "/index.html",
+                    "/static/**", "/css/**", "/js/**", "/assets/**", "/images/**", "/favicon.ico",
+                    "/actuator/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/api/config/google-client-id"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-
         return http.build();
     }
 }

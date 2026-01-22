@@ -10,6 +10,11 @@ export default defineConfig({
         target: "https://localhost:8081",
         changeOrigin: true,
         secure: false
+      },
+      "/api/config/google-client-id": {
+        target: "https://localhost:8081",
+        changeOrigin: true,
+        secure: false
       }
     }
   },

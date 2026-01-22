@@ -18,8 +18,8 @@
     <description>React / Vite front-end bundled by Maven</description>
 
     <properties>
-        <node.version>v24.5.0</node.version>
-        <npm.version>11.5.1</npm.version>
+        <node.version>v24.13.0</node.version>
+        <npm.version>11.6.2</npm.version>
     </properties>
 
 

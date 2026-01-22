@@ -42,3 +42,6 @@ build/
 /modules/llabdocs-ui/src/main/ui/node_modules/
 /modules/llabdocs-ui/src/main/ui/node/
 /modules/llabdocs-ui/src/main/ui/dist/
+.env
+.env.*
+!.env.example
