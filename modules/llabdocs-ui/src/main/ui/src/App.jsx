@@ -119,7 +119,7 @@ export default function App() {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ position: "relative" }}>
       <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom align="center" className="hero-title">
           LLabDocs Signature Validator
@@ -129,18 +129,34 @@ export default function App() {
         </Typography>
 
         {!isAuthenticated ? (
-          <Box textAlign="center" mt={2}>
+          <Box
+            sx={{
+              position: "fixed",
+              top: 16,
+              right: 16,
+              zIndex: (theme) => theme.zIndex.tooltip
+            }}
+          >
             <div id="g_id_signin"></div>
           </Box>
         ) : (
-          <Box textAlign="center" mt={2}>
-            <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
+          <Box
+            sx={{
+              position: "fixed",
+              top: 16,
+              right: 16,
+              zIndex: (theme) => theme.zIndex.tooltip
+            }}
+          >
+            <Stack direction="row" spacing={2} alignItems="center">
               {userPicture ? (
                 <Avatar alt={userName} src={userPicture} />
               ) : (
                 <Avatar>{userName.charAt(0)}</Avatar>
               )}
-              <Typography variant="subtitle1">{userName}</Typography>
+              <Typography variant="subtitle1" noWrap>
+                {userName}
+              </Typography>
               <Button variant="outlined" size="small" onClick={handleLogout}>
                 Log out
               </Button>
