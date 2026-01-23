@@ -20,13 +20,16 @@ export default function App() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authToken, setAuthToken] = useState("");
+  // restore auth token from localStorage (if present) right away
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem("authToken") || "");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("authToken"));
   const [userName, setUserName] = useState("");
   const [userPicture, setUserPicture] = useState("");
   const [googleClientId, setGoogleClientId] = useState("");
 
   const handleGoogleCredential = (response) => {
+    // persist token so user stays logged-in after page reload
+    localStorage.setItem("authToken", response.credential);
     setAuthToken(response.credential);
     try {
       const payload = JSON.parse(atob(response.credential.split(".")[1]));
@@ -44,11 +47,28 @@ export default function App() {
     } catch (e) {
       /* ignore */
     }
+    localStorage.removeItem("authToken");
     setAuthToken("");
     setIsAuthenticated(false);
     setUserName("");
     setUserPicture("");
   };
+
+  // Restore user info from stored token on mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) {
+      try {
+        const payload = JSON.parse(atob(storedToken.split(".")[1]));
+        setUserName(payload.name || payload.email || "");
+        setUserPicture(payload.picture || "");
+        setIsAuthenticated(true);
+      } catch (e) {
+        console.error("Failed to decode stored ID token", e);
+        localStorage.removeItem("authToken");
+      }
+    }
+  }, []);
 
   // Fetch Google OAuth client-id from backend once on mount
   useEffect(() => {
