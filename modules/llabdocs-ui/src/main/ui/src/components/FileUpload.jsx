@@ -31,11 +31,12 @@ export default function FileUpload({ onValidate, disabled = false }) {
         startIcon={<CloudUploadIcon />}
         onClick={() => inputRef.current.click()}
         disabled={disabled}
+        className="primary-cta"
       >
         Select Document
       </Button>
       {fileName && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" className="file-name">
           {fileName}
         </Typography>
       )}

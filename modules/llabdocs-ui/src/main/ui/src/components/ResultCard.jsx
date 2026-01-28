@@ -64,7 +64,7 @@ function CertificateTable({ certificates }) {
 
 export default function ResultCard({ data }) {
   return (
-    <Card variant="outlined" sx={{ mt: 4 }}>
+    <Card variant="outlined" sx={{ mt: 4 }} className="result-card">
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {data.documentName}
@@ -90,7 +90,8 @@ export default function ResultCard({ data }) {
           <Paper
             key={sig.signatureId}
             variant="outlined"
-            sx={{ p: 2, mb: 2, bgcolor: "#fafafa" }}
+            sx={{ p: 2, mb: 2 }}
+            className="signature-card"
           >
             <Typography variant="subtitle1" gutterBottom>
               Signature ID: {sig.signatureId}
