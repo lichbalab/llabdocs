@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/docs/validate")
+@PreAuthorize("isAuthenticated()")
 public class DocValidationController {
     private final SignatureValidationServiceLLab signatureValidationServiceLLab;
     private final ValidationResponseMapper mapper;

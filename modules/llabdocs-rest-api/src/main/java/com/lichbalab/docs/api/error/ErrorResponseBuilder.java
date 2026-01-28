@@ -19,7 +19,7 @@ public class ErrorResponseBuilder {
         this.messageSource = messageSource;
     }
 
-    public ErrorResponse buildErrorResponse(HttpServletRequest request, ErrorCode errorCode, Object[] errorParams) {
+    public ErrorResponse buildErrorResponse(HttpServletRequest request, LLabErrorCode errorCode, Object[] errorParams) {
 
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimestamp(new Date());

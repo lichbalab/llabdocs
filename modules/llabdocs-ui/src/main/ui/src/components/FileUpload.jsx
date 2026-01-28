@@ -4,7 +4,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-export default function FileUpload({ onValidate }) {
+export default function FileUpload({ onValidate, disabled = false }) {
   const inputRef = useRef(null);
   const [fileName, setFileName] = useState("");
 
@@ -24,16 +24,19 @@ export default function FileUpload({ onValidate }) {
         accept=".pdf,.xml"
         hidden
         onChange={handleChange}
+        disabled={disabled}
       />
       <Button
         variant="contained"
         startIcon={<CloudUploadIcon />}
         onClick={() => inputRef.current.click()}
+        disabled={disabled}
+        className="primary-cta"
       >
         Select Document
       </Button>
       {fileName && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" className="file-name">
           {fileName}
         </Typography>
       )}

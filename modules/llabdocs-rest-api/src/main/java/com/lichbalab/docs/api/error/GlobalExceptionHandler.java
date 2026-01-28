@@ -23,8 +23,8 @@ public class GlobalExceptionHandler {
         this.errorResponseBuilder = errorResponseBuilder;
     }
 
-    @ExceptionHandler(CmcException.class)
-    public ResponseEntity<ErrorResponse> handleCmsException(CmcException exception, HttpServletRequest request) {
+    @ExceptionHandler(LLabException.class)
+    public ResponseEntity<ErrorResponse> handleCmsException(LLabException exception, HttpServletRequest request) {
         ErrorResponse error = errorResponseBuilder.buildErrorResponse(request, exception.getErrorCode(), exception.getParams());
         log.error(error.getMessage(), exception);
         return new ResponseEntity<>(error, getStatus(error.getStatus()));
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse>  handleAnyOtherException(Exception exception, HttpServletRequest request) {
-        ErrorResponse error = errorResponseBuilder.buildErrorResponse(request, ErrorCode.GENERAL, new Object[]{});
+        ErrorResponse error = errorResponseBuilder.buildErrorResponse(request, LLabErrorCode.GENERAL, new Object[]{});
         log.error(error.getMessage(), exception);
         return new ResponseEntity<>(error, getStatus(error.getStatus()));
     }
